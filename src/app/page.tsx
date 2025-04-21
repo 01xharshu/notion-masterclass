@@ -12,7 +12,6 @@ import Instructors from '@/components/Instructors';
 export default function Home() {
   return (
     <main className="min-h-screen">
-
       <Hero />
       <Problems />
       <Instructors />
