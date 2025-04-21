@@ -4,7 +4,7 @@ import Problems from '../components/Problems';
 import Curriculum from '../components/Curriculum';
 import FAQ from '../components/FAQ';
 import Footer from '../components/Footer';
-import DashboardGrid from '../components/DashboardGrid';
+
 import Instructors from '@/components/Instructors';
 
 
@@ -18,7 +18,6 @@ export default function Home() {
       <Instructors />
       <Curriculum />
       <FAQ />
-      <DashboardGrid />
       <Footer />
 
     </main>
