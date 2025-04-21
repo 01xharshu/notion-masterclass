@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { FaPlay, FaFileDownload, FaChevronDown, FaChevronRight } from 'react-icons/fa';
@@ -373,7 +374,7 @@ export default function Course() {
                                 <FaPlay className="w-6 h-6 text-white ml-1" />
                               </div>
                             </div>
-                            <img 
+                            <Image
                               src="/api/placeholder/800/450" 
                               alt="Video thumbnail" 
                               className="w-full h-full object-cover opacity-50"
