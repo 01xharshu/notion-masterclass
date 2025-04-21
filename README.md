@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LMS WebVeda Clone
+
+A modern LMS website clone built with Next.js and Tailwind CSS.
+
+## Required Images
+
+Please add the following images to the `public` directory:
+
+1. `hero-image.png` (Dimensions: 1920x1080px)
+   - A high-quality image representing the course
+   - Should be professional and engaging
+
+2. `instructor-1.png` (Dimensions: 400x400px)
+   - Profile picture of the main instructor
+   - Should be a professional headshot
 
 ## Getting Started
 
-First, run the development server:
-
+1. Install dependencies:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Add the required images to the `public` directory
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Run the development server:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Learn More
+## Features
 
-To learn more about Next.js, take a look at the following resources:
+- Modern, responsive design
+- Animated sections using Framer Motion
+- Mobile-first approach
+- SEO optimized
+- Performance optimized
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Next.js 14
+- TypeScript
+- Tailwind CSS
+- Framer Motion
+- Heroicons
+- Headless UI
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+  ├── app/
+  │   ├── layout.tsx
+  │   └── page.tsx
+  ├── components/
+  │   ├── Hero.tsx
+  │   ├── Problems.tsx
+  │   ├── Curriculum.tsx
+  │   └── Instructors.tsx
+  └── styles/
+      └── globals.css
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contributing
+
+Feel free to submit issues and enhancement requests.

@@ -1,5 +1,72 @@
 @import "tailwindcss";
 
+
+
+@keyframes glowTracerRotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.enroll-glow-border {
+  position: relative;
+  display: inline-block;
+  padding: 4px; /* space for glow */
+  border-radius: 9999px;
+  overflow: visible;
+}
+
+/* Static full glowing stroke */
+.enroll-glow-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-sizing: border-box;
+  padding: 3px;
+  background: conic-gradient(#6366f1 0deg 360deg);
+  filter: blur(6px);
+  opacity: 0.3;
+  z-index: 0;
+  pointer-events: none;
+
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Small bright glowing tracer */
+.enroll-glow-border::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-sizing: border-box;
+  padding: 3px;
+
+  /* VERY SMALL bright arc (about 10deg) */
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg 350deg,
+    #a78bfa 350deg 360deg
+  );
+
+  filter: blur(8px) brightness(2);
+  animation: glowTracerRotate 2.5s linear infinite;
+  z-index: 1;
+  pointer-events: none;
+
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -24,3 +91,88 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.grid-areas-layout {
+  grid-template-areas:
+    "a a b b"
+    "a a d e"
+    "c c d e";
+}
+
+.area-a { grid-area: a; }
+.area-b { grid-area: b; }
+.area-c { grid-area: c; }
+.area-d { grid-area: d; }
+.area-e { grid-area: e; }
+
+/* --- Glow Border Animation for Enroll Button --- */
+
+@keyframes rotateGlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 360deg 50%;
+  }
+}
+
+.glow-border {
+  border-radius: 9999px;
+  padding: 3px; /* Increased for a brighter glow */
+  background: conic-gradient(
+    from 0deg,
+    #6366f1,
+    #a78bfa,  /* Lighter indigo */
+    #6366f1,
+    #a78bfa,
+    #6366f1
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  animation: rotateGlow 2s linear infinite; /* Increased speed */
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+@keyframes rotateGlow {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.enroll-glow-wrapper {
+  position: relative;
+  display: inline-block;
+  padding: 4px; /* space for the glow */
+  border-radius: 9999px; /* fully rounded */
+}
+
+.enroll-glow-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from 0deg,
+    #6366f1,
+    #a78bfa,
+    #6366f1,
+    #a78bfa,
+    #6366f1
+  );
+  filter: blur(8px);
+  animation: rotateGlow 2s linear infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+
