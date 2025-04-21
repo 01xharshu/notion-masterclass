@@ -1,30 +1,46 @@
 'use client';
 
+import React from 'react';
 import { motion } from 'framer-motion';
 import { FaQuestionCircle, FaChartLine, FaLightbulb } from 'react-icons/fa';
+
+interface ProblemCardProps {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  className?: string;
+}
 
 const problems = [
   {
     title: "Scattered Digital Life",
-    description: "Most people use multiple tools and apps to manage their tasks, notes, goals, and projects — leading to chaos and inefficiency.",
+    description:
+      "Most people use multiple tools and apps to manage their tasks, notes, goals, and projects — leading to chaos and inefficiency.",
     icon: <FaQuestionCircle />,
-    className: "sm:col-span-2 sm:row-span-2 area-a"
+    className: "sm:col-span-2 sm:row-span-2 area-a",
   },
   {
     title: "Inconsistent Productivity",
-    description: "Without a unified system, it’s hard to stay consistent with your habits, routines, or project timelines.",
+    description:
+      "Without a unified system, it’s hard to stay consistent with your habits, routines, or project timelines.",
     icon: <FaChartLine />,
-    className: "sm:col-span-2 area-b"
+    className: "sm:col-span-2 area-b",
   },
   {
     title: "Overwhelmed by Features",
-    description: "Notion can feel intimidating with so many blocks, templates, and views — which often leads to procrastination or poor usage.",
+    description:
+      "Notion can feel intimidating with so many blocks, templates, and views — which often leads to procrastination or poor usage.",
     icon: <FaLightbulb />,
-    className: "area-c"
-  }
+    className: "area-c",
+  },
 ];
 
-const ProblemCard = ({ title, description, icon, className = "" }: any) => (
+const ProblemCard = ({
+  title,
+  description,
+  icon,
+  className = "",
+}: ProblemCardProps) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}

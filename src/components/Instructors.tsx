@@ -12,7 +12,7 @@ interface Instructor {
   stats?: {
     value: string;
     label: string;
-    icon: any;
+    icon: React.ComponentType<React.ComponentProps<'svg'>>;
   }[];
 }
 

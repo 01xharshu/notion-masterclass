@@ -375,8 +375,9 @@ export default function Course() {
                               </div>
                             </div>
                             <Image
-                              src="/api/placeholder/800/450" 
-                              alt="Video thumbnail" 
+                              src="/api/placeholder/800/450"
+                              fill
+                              alt="Video thumbnail"
                               className="w-full h-full object-cover opacity-50"
                             />
                           </div>
