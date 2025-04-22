@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useCourseProgress } from '@/contexts/CourseProgressContext';
@@ -9,10 +9,16 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
 
 export function CourseProgressBar() {
-  const { progress, getOverallProgress } = useCourseProgress();
-  const overallProgress = getOverallProgress();
+  const { progress, getOverallProgress, updateChapterProgress } = useCourseProgress();
+  const [overallProgress, setOverallProgress] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    setMounted(true);
+    setOverallProgress(getOverallProgress());
+  }, [getOverallProgress]);
 
   const handleCompleteToggle = () => {
     const newProgress = overallProgress === 100 ? 0 : 100;
@@ -31,9 +37,13 @@ export function CourseProgressBar() {
     });
   };
 
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <div className={cn(
-      "fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t shadow-lg transition-all duration-300",
+      "fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t shadow-lg transition-all duration-300 z-50",
       isExpanded ? "h-32" : "h-16"
     )}>
       <div className="container mx-auto px-4 py-3">

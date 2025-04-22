@@ -1,17 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ArrowLeft, ChevronDown, ChevronRight, Menu } from 'lucide-react';
+import { ArrowLeft, Sun, Moon, Bookmark } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { cn } from '@/lib/utils';
-import { useSidebar } from '@/hooks/use-sidebar';
-import { useCourseProgress } from '@/contexts/CourseProgressContext';
-import { Progress } from '@/components/ui/progress';
+import { useTheme } from 'next-themes';
+import { useToast } from "@/components/ui/use-toast";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 interface CourseLayoutProps {
   children: React.ReactNode;
@@ -21,35 +19,6 @@ interface CourseLayoutProps {
   currentChapter?: string;
 }
 
-interface Module {
-  id: string;
-  title: string;
-  chapters: {
-    id: string;
-    title: string;
-    href: string;
-  }[];
-}
-
-const modules: Module[] = [
-  {
-    id: 'module-1',
-    title: 'Getting Started with Notion',
-    chapters: [
-      { id: 'chapter-1', title: 'Introduction to Notion', href: '/course/module-1/chapter-1' },
-      { id: 'chapter-2', title: 'Basic Navigation', href: '/course/module-1/chapter-2' },
-    ],
-  },
-  {
-    id: 'module-2',
-    title: 'Advanced Features',
-    chapters: [
-      { id: 'chapter-1', title: 'Databases and Relations', href: '/course/module-2/chapter-1' },
-      { id: 'chapter-2', title: 'Formulas and Functions', href: '/course/module-2/chapter-2' },
-    ],
-  },
-];
-
 export default function CourseLayout({
   children,
   title = "Notion Masterclass",
@@ -58,16 +27,27 @@ export default function CourseLayout({
   currentChapter,
 }: CourseLayoutProps) {
   const router = useRouter();
-  const { isOpen, toggle } = useSidebar();
-  const [expandedModules, setExpandedModules] = React.useState<string[]>([]);
-  const { getModuleProgress } = useCourseProgress();
+  const { theme, setTheme } = useTheme();
+  const { toast } = useToast();
+  const [savedChapters, setSavedChapters] = useState<string[]>([]);
 
-  const toggleModule = (moduleId: string) => {
-    setExpandedModules((prev) =>
-      prev.includes(moduleId)
-        ? prev.filter((id) => id !== moduleId)
-        : [...prev, moduleId]
-    );
+  const handleBookmark = (chapterId: string) => {
+    setSavedChapters(prev => {
+      const isBookmarked = prev.includes(chapterId);
+      if (isBookmarked) {
+        toast({
+          title: "Chapter Removed",
+          description: "Chapter has been removed from your saved chapters."
+        });
+        return prev.filter(id => id !== chapterId);
+      } else {
+        toast({
+          title: "Chapter Saved",
+          description: "Chapter has been added to your saved chapters."
+        });
+        return [...prev, chapterId];
+      }
+    });
   };
 
   return (
@@ -102,7 +82,7 @@ export default function CourseLayout({
                   <>
                     <BreadcrumbItem>
                       <BreadcrumbLink href={`/course/${currentModule}`}>
-                        {modules.find(m => m.id === currentModule)?.title}
+                        {currentModule}
                       </BreadcrumbLink>
                     </BreadcrumbItem>
                     {currentChapter && (
@@ -110,10 +90,7 @@ export default function CourseLayout({
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
                           <BreadcrumbPage>
-                            {modules
-                              .find(m => m.id === currentModule)
-                              ?.chapters.find(c => c.id === currentChapter)
-                              ?.title}
+                            {currentChapter}
                           </BreadcrumbPage>
                         </BreadcrumbItem>
                       </>
@@ -124,98 +101,54 @@ export default function CourseLayout({
             </Breadcrumb>
           )}
 
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden ml-auto"
-            onClick={toggle}
-          >
-            <Menu className="h-6 w-6" />
-            <span className="sr-only">Toggle menu</span>
-          </Button>
+          <div className="ml-auto flex items-center gap-2">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="hover:bg-muted">
+                  <Bookmark className="h-4 w-4" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Saved Chapters</SheetTitle>
+                </SheetHeader>
+                <div className="mt-4 space-y-2">
+                  {savedChapters.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No saved chapters yet</p>
+                  ) : (
+                    savedChapters.map((chapterId) => (
+                      <div key={chapterId} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted">
+                        <span className="text-sm">{chapterId}</span>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleBookmark(chapterId)}
+                          className="h-8 w-8"
+                        >
+                          <Bookmark className="h-4 w-4 text-primary fill-primary" />
+                        </Button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="hover:bg-muted"
+            >
+              {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </Button>
+          </div>
         </div>
       </nav>
 
       {/* Main Content */}
-      <div className="flex">
-        {/* Sidebar Toggle Button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="fixed top-20 left-0 z-30 lg:hidden"
-          onClick={toggle}
-        >
-          <ChevronRight className={cn(
-            "h-4 w-4 transition-transform duration-300",
-            isOpen && "rotate-180"
-          )} />
-        </Button>
-
-        {/* Sidebar */}
-        <aside
-          className={cn(
-            "fixed top-16 z-30 -translate-x-full w-64 border-r bg-background transition-transform duration-300 lg:translate-x-0",
-            isOpen && "translate-x-0"
-          )}
-        >
-          <ScrollArea className="h-[calc(100vh-4rem)]">
-            <div className="p-4">
-              {modules.map((module) => (
-                <div key={module.id} className="mb-4">
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-between"
-                    onClick={() => toggleModule(module.id)}
-                  >
-                    <div className="flex flex-col items-start">
-                      <span className="font-medium">{module.title}</span>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Progress 
-                          value={getModuleProgress(module.id)} 
-                          className="h-1 w-16" 
-                        />
-                        <span className="text-xs text-muted-foreground">
-                          {Math.round(getModuleProgress(module.id))}%
-                        </span>
-                      </div>
-                    </div>
-                    {expandedModules.includes(module.id) ? (
-                      <ChevronDown className="h-4 w-4" />
-                    ) : (
-                      <ChevronRight className="h-4 w-4" />
-                    )}
-                  </Button>
-                  {expandedModules.includes(module.id) && (
-                    <div className="mt-2 space-y-1 pl-4">
-                      {module.chapters.map((chapter) => (
-                        <Button
-                          key={chapter.id}
-                          variant="ghost"
-                          className="w-full justify-start"
-                          asChild
-                        >
-                          <Link href={chapter.href}>
-                            {chapter.title}
-                          </Link>
-                        </Button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
-        </aside>
-
-        {/* Content Area */}
-        <main className={cn(
-          "flex-1 min-w-0 transition-[margin] duration-300",
-          isOpen ? "lg:ml-64" : "lg:ml-0"
-        )}>
-          {children}
-        </main>
-      </div>
+      <main className="flex-1 min-w-0 pb-16">
+        {children}
+      </main>
     </div>
   );
 } 

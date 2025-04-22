@@ -5,8 +5,9 @@ import { CommandMenuProvider } from '@/components/CommandMenuProvider';
 import { SidebarProvider } from '@/hooks/use-sidebar';
 import { CourseProgressProvider } from '@/contexts/CourseProgressContext';
 import { UserDataProvider } from '@/contexts/UserDataContext';
-import "@/app/globals.css";
+import { Toaster } from '@/components/ui/toast';
 import { ThemeProvider } from 'next-themes';
+import "@/app/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,6 +32,7 @@ export default function App({ Component, pageProps }: AppProps) {
           </SidebarProvider>
         </CommandMenuProvider>
       </VideoModalProvider>
+      <Toaster />
     </ThemeProvider>
   );
 } 
