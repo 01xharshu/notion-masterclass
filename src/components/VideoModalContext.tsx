@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import * as React from 'react';
 
 interface VideoModalContextType {
   isOpen: boolean;
@@ -8,25 +8,45 @@ interface VideoModalContextType {
   closeModal: () => void;
 }
 
-const VideoModalContext = createContext<VideoModalContextType | undefined>(undefined);
+const VideoModalContext = React.createContext<VideoModalContextType | undefined>(undefined);
 
-export const VideoModalProvider = ({ children }: { children: ReactNode }) => {
-  const [isOpen, setIsOpen] = useState(false);
+export function VideoModalProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [isOpen, setIsOpen] = React.useState(false);
 
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
+  const openModal = React.useCallback(() => {
+    setIsOpen(true);
+  }, []);
+
+  const closeModal = React.useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  const value = React.useMemo(
+    () => ({
+      isOpen,
+      openModal,
+      closeModal,
+    }),
+    [isOpen, openModal, closeModal]
+  );
 
   return (
-    <VideoModalContext.Provider value={{ isOpen, openModal, closeModal }}>
+    <VideoModalContext.Provider value={value}>
       {children}
     </VideoModalContext.Provider>
   );
-};
+}
 
-export const useVideoModal = (): VideoModalContextType => {
-  const context = useContext(VideoModalContext);
-  if (!context) {
+export function useVideoModal() {
+  const context = React.useContext(VideoModalContext);
+  
+  if (context === undefined) {
     throw new Error('useVideoModal must be used within a VideoModalProvider');
   }
+  
   return context;
-};
+}

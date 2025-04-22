@@ -1,121 +1,101 @@
 "use client";
 
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { FaUserGraduate, FaUsers, FaStar } from 'react-icons/fa';
+import { Button } from '@/components/ui/button';
 import { useVideoModal } from './VideoModalContext';
+import { Play, ChevronRight } from 'lucide-react';
 
 export default function Hero() {
   const { openModal } = useVideoModal();
 
   return (
-    <section className="relative bg-white" aria-label="Notion Masterclass Hero">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          {/* Left Column */}
+    <div className="relative overflow-hidden bg-background pt-[4.5rem]">
+      {/* Background Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-background via-muted/50 to-background" />
+      
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="space-y-8"
           >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-              From Chaos to Clarity: Master Notion & Organize Your Digital Life
+            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
+              Master Notion for{' '}
+              <span className="text-primary">YouTube Success</span>
             </h1>
-            <p className="text-lg text-gray-600">
-              <span className="text-2xl text-indigo-600">
-                A FREE Masterclass to Help You Save Time, Focus Better & Take Control — Built for Students & Professionals
-              </span>
+            <p className="mt-6 text-lg leading-8 text-muted-foreground">
+              Learn how to build powerful systems in Notion to grow and monetize your YouTube channel. Join hundreds of creators who have transformed their content creation process.
             </p>
-
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="flex items-center justify-center space-x-2">
-                  <FaUserGraduate className="text-indigo-600 text-xl" />
-                  <span className="text-2xl font-bold text-gray-900">1500+</span>
-                </div>
-                <p className="text-sm text-gray-600 mt-1">Enrolled</p>
-              </div>
-              <div className="text-center">
-                <div className="flex items-center justify-center space-x-2">
-                  <FaUsers className="text-indigo-600 text-xl" />
-                  <span className="text-2xl font-bold text-gray-900">2000+</span>
-                </div>
-                <p className="text-sm text-gray-600 mt-1">Students</p>
-              </div>
-              <div className="text-center">
-                <div className="flex items-center justify-center space-x-2">
-                  <FaStar className="text-indigo-600 text-xl" />
-                  <span className="text-2xl font-bold text-gray-900">4.96</span>
-                </div>
-                <p className="text-sm text-gray-600 mt-1">Course Rating</p>
-              </div>
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <Button
+                size="lg"
+                className="gap-2"
+                onClick={openModal}
+              >
+                <Play className="h-4 w-4" />
+                Watch Overview
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                asChild
+                className="gap-2"
+              >
+                <a href="/course">
+                  Take me to the course
+                  <ChevronRight className="h-4 w-4" />
+                </a>
+              </Button>
             </div>
-
-            {/* Features */}
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                'Master Notion from Zero to Pro',
-                'Build Your Second Brain & Productivity System',
-                '100% Free Course – No Strings',
-                'Live Q&A + Lifetime Access',
-              ].map((feature, i) => (
-                <div key={i} className="flex items-center space-x-2">
-                  <span className="text-indigo-600" aria-hidden="true">
-                    ✓
-                  </span>
-                  <span className="text-gray-600">{feature}</span>
-                </div>
-              ))}
-            </div>
-
-            <Link href="/course"
-              className="w-full md:w-auto bg-indigo-600 text-white px-8 py-4 rounded-xl font-medium hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              aria-label="Enroll Now"
-            >
-              Take me to the course!
-            </Link>
           </motion.div>
 
-          {/* Right Column */}
+          {/* Features Grid */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6"
+          >
+            {[
+              { title: '20+ Lessons', description: 'Comprehensive curriculum' },
+              { title: 'Lifetime Access', description: 'Learn at your own pace' },
+              { title: 'Community', description: 'Join fellow creators' },
+            ].map((feature, index) => (
+              <div
+                key={index}
+                className="rounded-xl border bg-card p-4 text-card-foreground shadow transition-colors hover:bg-muted/50"
+              >
+                <h3 className="font-semibold">{feature.title}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
+          </motion.div>
+
+          {/* Course Preview Image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="relative aspect-video rounded-xl overflow-hidden shadow-xl"
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="mt-16 relative"
           >
-            <button
-              onClick={openModal}
-              aria-label="Open Video Modal"
-              className="relative w-full h-full focus:outline-none"
-              type="button"
-            >
+            <div className="aspect-[16/9] overflow-hidden rounded-xl bg-muted shadow-2xl ring-1 ring-gray-900/10 m-2">
               <Image
                 src="/thw-content.png"
                 alt="Course Preview"
-                className="block object-cover w-full h-full"
-                width={600}
-                height={400}
+                width={1920}
+                height={1080}
+                className="object-cover"
                 priority
               />
-              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                <span className="w-16 h-16 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform">
-                  <svg
-                    className="w-8 h-8 text-indigo-600"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </span>
-              </div>
-            </button>
+              {/* <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent rounded-xl" /> */}
+            </div>
           </motion.div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { VideoModalProvider } from '@/components/VideoModalContext';
 import { Inter } from "next/font/google";
 import "./globals.css";
-import BottomNav from '../components/BottomNav';
+import NavigationWrapper from '@/components/NavigationWrapper';
+import { CommandMenuProvider } from '@/components/CommandMenuProvider';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,10 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-      <VideoModalProvider>
-        {children}
-        <BottomNav />
-        <div className="pb-16 md:pb-24" /> {/* Different padding for mobile and desktop */}
+        <VideoModalProvider>
+          <CommandMenuProvider>
+            <NavigationWrapper>
+              {children}
+            </NavigationWrapper>
+          </CommandMenuProvider>
         </VideoModalProvider>
       </body>
     </html>

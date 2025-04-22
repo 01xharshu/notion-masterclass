@@ -1,71 +1,83 @@
 'use client';
 
-import { Fragment } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import { AiOutlineClose } from 'react-icons/ai';
+import * as React from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from '@/components/ui/button';
+import { X } from 'lucide-react';
 import { useVideoModal } from './VideoModalContext';
 
 export default function VideoModal() {
   const { isOpen, closeModal } = useVideoModal();
+  const [isClient, setIsClient] = React.useState(false);
+
+  // Handle client-side mounting
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null;
 
   return (
-    <Transition appear show={isOpen} as={Fragment}>
-      <Dialog
-        as="div"
-        className="fixed inset-0 z-50 overflow-y-auto"
-        onClose={closeModal}
-      >
-        <div className="min-h-screen px-4 text-center bg-black/50">
-          <span className="inline-block h-screen align-middle" aria-hidden="true">
-            &#8203;
-          </span>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0 scale-95"
-            enterTo="opacity-100 scale-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100 scale-100"
-            leaveTo="opacity-0 scale-95"
-          >
-            <Dialog.Panel className="relative inline-block w-full max-w-3xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform rounded-lg bg-white shadow-xl">
-              {/* Close Button */}
-              <button
-                onClick={closeModal}
-                aria-label="Close Video"
-                className="absolute top-4 right-4 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded"
-                type="button"
-              >
-                <AiOutlineClose size={24} />
-              </button>
+    <Dialog open={isOpen} onOpenChange={closeModal}>
+      <DialogContent className="sm:max-w-[90vw] md:max-w-[800px] p-0">
+        <DialogHeader className="p-6 pb-0">
+          <div className="flex items-center justify-between">
+            <DialogTitle className="text-xl font-semibold">
+              Course Overview
+            </DialogTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={closeModal}
+            >
+              <X className="h-4 w-4" />
+              <span className="sr-only">Close</span>
+            </Button>
+          </div>
+          <DialogDescription className="text-sm text-muted-foreground pt-2">
+            Watch this overview to learn what you'll master in this course
+          </DialogDescription>
+        </DialogHeader>
 
-              {/* Video iframe */}
-              <div className="w-full aspect-video p-4">
-                <iframe
-                  src="https://www.youtube.com/embed/wTSFbjT8UL4?si=UoUoOhJbielPSZ3w"
-                  title="YouTube video player"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-full rounded-md"
-                />
-              </div>
+        <div className="p-6 pt-2">
+          <div className="aspect-video overflow-hidden rounded-lg border bg-muted">
+            <iframe
+              src="https://www.youtube.com/embed/wTSFbjT8UL4?autoplay=1"
+              title="Course Overview"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="h-full w-full"
+            />
+          </div>
 
-              {/* Centered Close Button */}
-              <div className="flex justify-center mt-6">
-                <button
-                  onClick={closeModal}
-                  className="px-4 flex items-center justify-center gap-2 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  type="button"
-                >
-                  <AiOutlineClose size={20} />
-                  Close Video
-                </button>
-              </div>
-            </Dialog.Panel>
-          </Transition.Child>
+          <div className="flex flex-col sm:flex-row gap-3 mt-6">
+            <Button
+              variant="outline"
+              className="sm:flex-1"
+              onClick={closeModal}
+            >
+              Close Video
+            </Button>
+            <Button 
+              className="sm:flex-1"
+              onClick={() => {
+                closeModal();
+                // Add navigation to course enrollment
+                window.location.href = '/#enroll';
+              }}
+            >
+              Enroll Now
+            </Button>
+          </div>
         </div>
-      </Dialog>
-    </Transition>
+      </DialogContent>
+    </Dialog>
   );
 }

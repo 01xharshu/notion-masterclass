@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import { useVideoModal } from './VideoModalContext';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface NavItem {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
@@ -20,95 +22,105 @@ const BottomNav: React.FC = () => {
     { icon: FaPlay, label: 'Video', href: '#video' },
     { icon: FaBook, label: 'Curriculum', href: '#curriculum' },
     { icon: FaChartLine, label: 'Results', href: '#results' },
-    { icon: FaShoppingCart, label: 'Enroll', href: '#enroll' },
+    { icon: FaShoppingCart, label: 'Enroll', href: '/course' },
   ];
 
   return (
     <>
       {/* Mobile Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 md:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60 md:hidden">
         <div className="grid grid-cols-4 h-16">
           {navItems.map((item, index) => {
             const Icon = item.icon;
+            const isVideo = item.label === 'Video';
+            const isEnroll = item.label === 'Enroll';
 
-            if (item.label === 'Video') {
+            if (isVideo) {
               return (
-                <button
+                <Button
                   key={index}
                   onClick={openModal}
-                  className="flex flex-col items-center justify-center text-gray-600 hover:text-indigo-600 transition-colors focus:outline-none"
-                  aria-label="Open Video Modal"
-                  type="button"
+                  variant="ghost"
+                  className="h-full rounded-none flex flex-col items-center justify-center gap-1 hover:bg-muted"
                 >
-                  <Icon className="w-5 h-5 mb-1" />
-                  <span className="text-xs">{item.label}</span>
-                </button>
+                  <Icon className="h-5 w-5" />
+                  <span className="text-xs font-medium">{item.label}</span>
+                </Button>
               );
             }
 
             return (
-              <a
+              <Link
                 key={index}
                 href={item.href}
-                className="flex flex-col items-center justify-center text-gray-600 hover:text-indigo-600 transition-colors"
+                className={cn(
+                  "flex flex-col items-center justify-center gap-1 hover:bg-muted transition-colors",
+                  isEnroll && "text-primary"
+                )}
               >
-                <Icon className="w-5 h-5 mb-1" />
-                <span className="text-xs">{item.label}</span>
-              </a>
+                <Icon className="h-5 w-5" />
+                <span className="text-xs font-medium">{item.label}</span>
+              </Link>
             );
           })}
         </div>
       </div>
 
       {/* Desktop Navigation */}
-      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white rounded-full shadow-lg border border-gray-100 z-50 hidden md:flex items-center justify-center space-x-2 px-6 py-3">
-        {navItems.map((item, index) => {
-          const Icon = item.icon;
-          const isEnroll = item.label === 'Enroll';
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden md:block">
+        <div className="flex items-center gap-2 rounded-full border bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60 p-2 shadow-lg">
+          {navItems.map((item, index) => {
+            const Icon = item.icon;
+            const isVideo = item.label === 'Video';
+            const isEnroll = item.label === 'Enroll';
 
-          if (item.label === 'Video') {
+            if (isVideo) {
+              return (
+                <Button
+                  key={index}
+                  onClick={openModal}
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center gap-2 px-4"
+                >
+                  <Icon className="h-4 w-4" />
+                  <span className="font-medium">{item.label}</span>
+                </Button>
+              );
+            }
+
+            if (isEnroll) {
+              return (
+                <Button
+                  key={index}
+                  asChild
+                  size="sm"
+                  className="px-4"
+                >
+                  <Link href={item.href}>
+                    <Icon className="h-4 w-4 mr-2" />
+                    {item.label}
+                  </Link>
+                </Button>
+              );
+            }
+
             return (
-              <button
+              <Button
                 key={index}
-                onClick={openModal}
-                className="flex items-center justify-center space-x-2 px-6 py-3 rounded-full transition-colors text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                aria-label="Open Video Modal"
-                type="button"
+                variant="ghost"
+                size="sm"
+                asChild
+                className="px-4"
               >
-                <Icon className="text-xl" />
-                <span className="text-sm font-medium">{item.label}</span>
-              </button>
+                <Link href={item.href}>
+                  <Icon className="h-4 w-4 mr-2" />
+                  {item.label}
+                </Link>
+              </Button>
             );
-          }
-
-          if (isEnroll) {
-            return (
-              <Link
-                key={index}
-                href={item.href}
-                className="relative enroll-glow-border rounded-full"
-              >
-                <span className="relative z-10 flex items-center space-x-2 px-6 py-3 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 select-none cursor-pointer">
-                  <Icon className="text-xl" />
-                  <span className="text-sm font-medium">{item.label}</span>
-                </span>
-              </Link>
-            );
-          }
-
-          return (
-            <Link
-              key={index}
-              href={item.href}
-              className={`flex items-center justify-center space-x-2 px-6 py-3 rounded-full transition-colors ${
-                pathname === `/${item.href}` ? 'bg-indigo-50 text-indigo-600' : 'text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              <Icon className="text-xl" />
-              <span className="text-sm font-medium">{item.label}</span>
-            </Link>
-          );
-        })}
+          })}
+        </div>
       </div>
     </>
   );
