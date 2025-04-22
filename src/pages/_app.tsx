@@ -8,17 +8,20 @@ import { UserDataProvider } from '@/contexts/UserDataContext';
 import { Toaster } from '@/components/ui/toast';
 import { ThemeProvider } from 'next-themes';
 import "@/app/globals.css";
+import { SavedPagesProvider } from '@/components/SavedPagesContext';
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
+    <SavedPagesProvider>
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <style jsx global>{`
         :root {
           --font-inter: ${inter.style.fontFamily};
         }
       `}</style>
+      
       <VideoModalProvider>
         <CommandMenuProvider>
           <SidebarProvider>
@@ -34,5 +37,6 @@ export default function App({ Component, pageProps }: AppProps) {
       </VideoModalProvider>
       <Toaster />
     </ThemeProvider>
+    </SavedPagesProvider>
   );
 } 
