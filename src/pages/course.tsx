@@ -300,7 +300,7 @@ export default function Course() {
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar navigation */}
-          <div className="md:w-1/4">
+          <div className="SideNav md:w-1/4">
             <div className="bg-white rounded-lg shadow-md p-6 sticky top-8">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Course Modules</h2>
               <nav className="space-y-1">
@@ -422,7 +422,7 @@ export default function Course() {
               >
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Course Overview</h2>
                 <p className="text-gray-700 mb-6">
-                  Welcome to Master Notion! This comprehensive course will teach you how to build powerful productivity systems in Notion. 
+                  Welcome to Notion Masterclass! This comprehensive course will teach you how to build powerful productivity systems in Notion. 
                   Select a module from the sidebar to begin your learning journey.
                 </p>
                 
