@@ -1,8 +1,9 @@
 'use client';
 
-import { FaPlay, FaBook, FaChartLine, FaShoppingCart } from 'react-icons/fa';
+import { FaPlay, FaBook, FaChartLine } from 'react-icons/fa';
+import { BiSolidFaceMask } from "react-icons/bi";
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+
 import React from 'react';
 import { useVideoModal } from './VideoModalContext';
 import { Button } from '@/components/ui/button';
@@ -15,14 +16,13 @@ interface NavItem {
 }
 
 const BottomNav: React.FC = () => {
-  const pathname = usePathname();
   const { openModal } = useVideoModal();
 
   const navItems: NavItem[] = [
     { icon: FaPlay, label: 'Video', href: '#video' },
     { icon: FaBook, label: 'Curriculum', href: '#curriculum' },
     { icon: FaChartLine, label: 'Results', href: '#results' },
-    { icon: FaShoppingCart, label: 'Enroll', href: '/course' },
+    { icon: BiSolidFaceMask, label: 'Join Now', href: '/course' },
   ];
 
   return (
@@ -68,11 +68,11 @@ const BottomNav: React.FC = () => {
 
       {/* Desktop Navigation */}
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden md:block">
-        <div className="flex items-center gap-2 rounded-full border bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60 p-2 shadow-lg">
+        <div className="flex items-center gap-3 rounded-full border bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60 p-6 shadow-lg">
           {navItems.map((item, index) => {
             const Icon = item.icon;
             const isVideo = item.label === 'Video';
-            const isEnroll = item.label === 'Enroll';
+            const isEnroll = item.label === 'Take me to Course'; 
 
             if (isVideo) {
               return (
@@ -81,10 +81,10 @@ const BottomNav: React.FC = () => {
                   onClick={openModal}
                   variant="ghost"
                   size="sm"
-                  className="flex items-center gap-2 px-4"
+                  className="flex items-center gap-3 px-4"
                 >
-                  <Icon className="h-4 w-4" />
-                  <span className="font-medium">{item.label}</span>
+                  <Icon className="h-5 w-5" />
+                  <span className="text-lg font-medium">{item.label}</span>
                 </Button>
               );
             }
@@ -95,11 +95,12 @@ const BottomNav: React.FC = () => {
                   key={index}
                   asChild
                   size="sm"
-                  className="px-4"
+                  className="p-8 m-8 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
+                  variant="ghost"
                 >
                   <Link href={item.href}>
-                    <Icon className="h-4 w-4 mr-2" />
-                    {item.label}
+                    <Icon className="h-5 w-5" />
+                    <span className="text-2xl font-bold">{item.label}</span>
                   </Link>
                 </Button>
               );
@@ -115,7 +116,7 @@ const BottomNav: React.FC = () => {
               >
                 <Link href={item.href}>
                   <Icon className="h-4 w-4 mr-2" />
-                  {item.label}
+                  <span className="text-lg font-medium">{item.label}</span>
                 </Link>
               </Button>
             );

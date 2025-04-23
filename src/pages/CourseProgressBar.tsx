@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useCourseProgress } from '@/contexts/CourseProgressContext';
 import { User, ChevronUp } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { toast } from 'sonner';
 
 
 export function CourseProgressBar() {
@@ -28,6 +29,8 @@ export function CourseProgressBar() {
         updateChapterProgress(moduleId, chapterId, newProgress === 100);
       });
     });
+    toast.success(`All chapters marked as ${newProgress === 100 ? 'completed' : 'not completed'}`);
+    setOverallProgress(newProgress);
   };
 
   if (!mounted) {

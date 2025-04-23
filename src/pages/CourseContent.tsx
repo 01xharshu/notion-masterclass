@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/router';
 import { toast } from "sonner"
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from 'next-themes';
