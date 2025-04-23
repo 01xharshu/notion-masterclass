@@ -4,16 +4,16 @@ import React, { useState, useEffect } from 'react';
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useCourseProgress } from '@/contexts/CourseProgressContext';
-import { CheckCircle2, User, ChevronUp } from 'lucide-react';
+import { User, ChevronUp } from 'lucide-react';
 import { cn } from "@/lib/utils";
-import { useToast } from "@/components/ui/use-toast";
+
 
 export function CourseProgressBar() {
   const { progress, getOverallProgress, updateChapterProgress } = useCourseProgress();
   const [overallProgress, setOverallProgress] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const { toast } = useToast();
+
 
   useEffect(() => {
     setMounted(true);
@@ -27,13 +27,6 @@ export function CourseProgressBar() {
       Object.keys(progress.modules[moduleId].chapters).forEach(chapterId => {
         updateChapterProgress(moduleId, chapterId, newProgress === 100);
       });
-    });
-
-    toast({
-      title: newProgress === 100 ? "Course Completed!" : "Course Reset",
-      description: newProgress === 100 
-        ? "Congratulations on completing the course!" 
-        : "You can start over from the beginning.",
     });
   };
 

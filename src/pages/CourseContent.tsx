@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
+import { toast } from "sonner"
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { 
-  BookOpen, 
+   
   Video, 
   FileText, 
   CheckCircle2,
@@ -16,14 +17,7 @@ import {
   Pause,
   Volume2,
   VolumeX,
-  Maximize2,
-  Minimize2,
   Clock,
-  Bookmark,
-  Share2,
-  MessageSquare,
-  Sun,
-  Moon,
   Maximize,
   Minimize
 } from 'lucide-react';
@@ -39,17 +33,11 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { useCourseProgress } from '@/contexts/CourseProgressContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
-import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useToast } from "@/components/ui/use-toast";
 import { CourseProgressBar } from './CourseProgressBar';
 import { fadeIn, slideIn, scaleIn, staggerChildren } from "@/lib/animations";
-import { useSavedPages } from '@/components/SavedPagesContext';
+
 
 interface Chapter {
   id: string;
@@ -117,15 +105,7 @@ const courseData: Module[] = [
             size: '1.2 MB'
           }
         ],
-        notes: 'Key points to remember:\n1. Notion is a flexible workspace\n2. Everything is a block\n3. Pages can be nested infinitely',
-        discussion: [
-          {
-            id: '1',
-            author: 'John Doe',
-            content: 'Great introduction! The video was very clear and helpful.',
-            timestamp: '2 hours ago'
-          }
-        ]
+        notes: 'Key points to remember:\n1. Notion is a flexible workspace\n2. Everything is a block\n3. Pages can be nested infinitely'
       },
       {
         id: 'chapter-2',
@@ -202,8 +182,9 @@ const getResourceIcon = (type: string) => {
   }
 };
 
+
+
 const CourseContent = () => {
-  const router = useRouter();
   const [expandedModule, setExpandedModule] = useState<string | null>(null);
   const [selectedChapter, setSelectedChapter] = useState<{ moduleId: string; chapterId: string } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -212,21 +193,17 @@ const CourseContent = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { progress, updateChapterProgress, getModuleProgress } = useCourseProgress();
-  const { toast } = useToast();
+
   const [videoProgress, setVideoProgress] = useState<VideoProgress>({
     currentTime: 0,
     duration: 0,
     isPlaying: false,
   });
-  const [comment, setComment] = useState("");
-  const [isBookmarked, setIsBookmarked] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const { theme, setTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isVideoFullscreen, setIsVideoFullscreen] = useState(false);
   const videoContainerRef = useRef<HTMLDivElement>(null);
-  const { isPageSaved, toggleSavedPage, updateLastAccessed } = useSavedPages();
-  const currentPageId = selectedChapter ? `${selectedChapter.moduleId}-${selectedChapter.chapterId}` : '';
 
   useEffect(() => {
     setIsLoading(false);
@@ -257,19 +234,12 @@ const CourseContent = () => {
   };
 
   // Handle theme toggle
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
 
   const toggleModule = (moduleId: string) => {
     setExpandedModule((prev) => (prev === moduleId ? null : moduleId));
   };
 
   const handleChapterClick = (moduleId: string, chapterId: string) => {
-    const pageId = `${moduleId}-${chapterId}`;
-    if (isPageSaved(pageId)) {
-      updateLastAccessed(pageId);
-    }
     setSelectedChapter({ moduleId, chapterId });
   };
 
@@ -287,9 +257,6 @@ const CourseContent = () => {
         ?.chapters.find(c => c.id === selectedChapter.chapterId)
     : null;
 
-  const selectedModuleData = selectedChapter 
-    ? courseData.find(m => m.id === selectedChapter.moduleId)
-    : null;
 
   const handleMuteToggle = () => {
     if (videoRef.current) {
@@ -298,16 +265,6 @@ const CourseContent = () => {
     }
   };
 
-  const handleFullscreenToggle = () => {
-    if (videoRef.current) {
-      if (!isFullscreen) {
-        videoRef.current.requestFullscreen();
-      } else {
-        document.exitFullscreen();
-      }
-      setIsFullscreen(!isFullscreen);
-    }
-  };
 
   const handlePlayPause = () => {
     if (videoRef.current) {
@@ -327,7 +284,7 @@ const CourseContent = () => {
     }
   };
 
-  const handleVideoProgress = (e: React.ChangeEvent<HTMLVideoElement>) => {
+  const handleVideoProgress = () => {
     if (videoRef.current) {
       setVideoProgress({
         currentTime: videoRef.current.currentTime,
@@ -337,72 +294,25 @@ const CourseContent = () => {
     }
   };
 
-  const handleCommentSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (comment.trim()) {
-      // Add comment to discussion
-      const newComment = {
-        id: Date.now().toString(),
-        author: "You",
-        content: comment,
-        timestamp: "Just now",
-      };
-      // Update discussion state
-      setComment("");
-      toast({
-        title: "Comment added",
-        description: "Your comment has been posted successfully.",
-      });
-    }
-  };
-
-  const handleBookmark = () => {
-    if (selectedChapter) {
-      const chapterId = `${selectedChapter.moduleId}-${selectedChapter.chapterId}`;
-      // This will be handled by the parent component
-      const event = new CustomEvent('bookmark', { detail: { chapterId } });
-      window.dispatchEvent(event);
-    }
-  };
-
-  // Listen for bookmark events
-  React.useEffect(() => {
-    const handleBookmarkEvent = (e: CustomEvent) => {
-      const { chapterId } = e.detail;
-      setIsBookmarked(prev => !prev);
-    };
-
-    window.addEventListener('bookmark', handleBookmarkEvent as EventListener);
-    return () => window.removeEventListener('bookmark', handleBookmarkEvent as EventListener);
-  }, []);
-
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  const handleSavePage = () => {
-    toggleSavedPage(currentPageId);
-    toast({
-      title: isPageSaved(currentPageId) ? "Page Unsaved" : "Page Saved",
-      description: isPageSaved(currentPageId) 
-        ? "The page has been removed from your saved pages."
-        : "The page has been added to your saved pages.",
-    });
-  };
 
   const handleChapterComplete = () => {
     if (selectedChapter) {
       const isCompleted = isChapterCompleted(selectedChapter.moduleId, selectedChapter.chapterId);
       updateChapterProgress(selectedChapter.moduleId, selectedChapter.chapterId, !isCompleted);
-      toast({
-        title: isCompleted ? "Chapter Reset" : "Chapter Completed! 🎉",
-        description: isCompleted 
-          ? "You can continue learning from where you left off. Your progress has been saved." 
-          : "Great job! You've completed this chapter. Keep up the good work!"
-      });
     }
+
+    toast.success(
+      isChapterCompleted(selectedChapter.moduleId, selectedChapter.chapterId) 
+        ?  "Chapter Completed 🎉"
+        : "Chapter marked as incomplete"
+    );
+
   };
 
   return (
@@ -472,26 +382,13 @@ const CourseContent = () => {
               </Button>
               <div className="flex items-center gap-2">
                 <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleSavePage}
-                  className={cn(
-                    "h-8 w-8",
-                    isPageSaved(currentPageId) && "text-primary"
-                  )}
-                >
-                  <Bookmark className={cn(
-                    "h-4 w-4 transition-colors",
-                    isPageSaved(currentPageId) && "fill-primary"
-                  )} />
-                </Button>
-                <Button
                   onClick={handleChapterComplete}
+                  
                   className={cn(
                     "gap-2 transition-all duration-300 relative overflow-hidden group",
                     isChapterCompleted(selectedChapter.moduleId, selectedChapter.chapterId) 
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90" 
-                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                      ?  "bg-muted text-muted-foreground hover:bg-muted/80"
+                      : "bg-primary text-primary-foreground hover:bg-primary/90"
                   )}
                 >
                   <motion.div
@@ -518,22 +415,6 @@ const CourseContent = () => {
                 <div className="flex items-center gap-1">
                   <Clock className="h-4 w-4" />
                   <span>{selectedChapterData.duration}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="h-8 w-8 p-0 hover:bg-muted"
-                    onClick={handleBookmark}
-                  >
-                    <Bookmark className={cn(
-                      "h-4 w-4 transition-colors duration-300",
-                      isBookmarked ? "text-primary fill-primary" : "text-muted-foreground"
-                    )} />
-                  </Button>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
-                    <Share2 className="h-4 w-4 text-muted-foreground" />
-                  </Button>
                 </div>
               </div>
             </div>
@@ -644,10 +525,9 @@ const CourseContent = () => {
             {/* Content Tabs */}
             <motion.div variants={slideIn}>
               <Tabs defaultValue="content" className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
+                <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="content">Content</TabsTrigger>
                   <TabsTrigger value="resources">Resources</TabsTrigger>
-                  <TabsTrigger value="discussion">Discussion</TabsTrigger>
                 </TabsList>
                 <TabsContent value="content" className="space-y-4">
                   <div className="prose prose-sm max-w-none">
@@ -691,49 +571,6 @@ const CourseContent = () => {
                     </Card>
                   ))}
                 </TabsContent>
-                <TabsContent value="discussion" className="space-y-4">
-                  <ScrollArea className="h-[400px] pr-4">
-                    {selectedChapterData.discussion?.map((comment) => (
-                      <Card key={comment.id} className="mb-4">
-                        <CardContent className="p-4">
-                          <div className="flex items-start gap-3">
-                            <Avatar>
-                              <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${comment.author}`} />
-                              <AvatarFallback>{comment.author[0]}</AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 space-y-2">
-                              <div className="flex items-center justify-between">
-                                <p className="font-medium">{comment.author}</p>
-                                <p className="text-sm text-muted-foreground">{comment.timestamp}</p>
-                              </div>
-                              <p className="text-sm">{comment.content}</p>
-                              <div className="flex items-center gap-2">
-                                <Button variant="ghost" size="sm" className="h-8">
-                                  <MessageSquare className="h-4 w-4 mr-2" />
-                                  Reply
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </ScrollArea>
-                  <form onSubmit={handleCommentSubmit} className="space-y-2">
-                    <Textarea
-                      placeholder="Add a comment..."
-                      value={comment}
-                      onChange={(e) => setComment(e.target.value)}
-                      className="min-h-[100px]"
-                    />
-                    <div className="flex justify-end">
-                      <Button type="submit" disabled={!comment.trim()}>
-                        <MessageSquare className="h-4 w-4 mr-2" />
-                        Post Comment
-                      </Button>
-                    </div>
-                  </form>
-                </TabsContent>
               </Tabs>
             </motion.div>
           </motion.div>
@@ -767,20 +604,13 @@ const CourseContent = () => {
                       />
                     </div>
                     <div className="mt-4">
-                      <div className="flex items-center justify-between text-sm mb-2">
-                        <span>Progress</span>
-                        <span>
-                          {isLoading ? (
-                            <span className="animate-pulse">...</span>
-                          ) : (
-                            `${Math.round(getModuleProgress(module.id))}%`
-                          )}
-                        </span>
-                      </div>
-                      <Progress 
+                      <div className="flex justify-evenly text-sm">
+                        <span >Progress : {Math.round(getModuleProgress(module.id))}%</span>
+                        <Progress 
                         value={isLoading ? 0 : getModuleProgress(module.id)} 
                         className="h-2" 
                       />
+                      </div>
                     </div>
                   </CardHeader>
                   

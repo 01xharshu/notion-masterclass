@@ -1,10 +1,10 @@
 "use client";
+import { Toaster } from "@/components/ui/sonner"
 
 import React from 'react';
 import Head from 'next/head';
 import CourseLayout from '@/components/layouts/CourseLayout';
 import CourseContent from '@/pages/CourseContent';
-import VideoModal from '@/components/VideoModal';
 
 export default function CoursePage() {
   return (
@@ -18,7 +18,7 @@ export default function CoursePage() {
       <div className="flex-1">
         <CourseContent />
       </div>
-      <VideoModal />
+<Toaster />
     </CourseLayout>
   );
 }
