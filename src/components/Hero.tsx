@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { useVideoModal } from './VideoModalContext';
 import { Play, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Hero() {
   const { openModal } = useVideoModal();
@@ -43,10 +44,10 @@ export default function Hero() {
                 asChild
                 className="gap-2"
               >
-                <a href="/course">
+                <Link href="/course">
                   Take me to the course
                   <ChevronRight className="h-4 w-4" />
-                </a>
+                </Link>
               </Button>
             </div>
           </motion.div>

@@ -1,8 +1,7 @@
-// components/progress/ClientProgress.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Progress } from '@/components/ui/progress'; // Adjust import path
+import { Progress } from '@/components/ui/progress'; 
 
 interface ClientProgressProps {
   module: { id: string };
@@ -33,8 +32,15 @@ export function ClientProgress({ module, isLoading }: ClientProgressProps) {
   );
 }
 
-// Mock function - replace with your actual progress calculation
+
 function getModuleProgress(moduleId: string): number {
-  // Your actual progress calculation logic here
-  return 0; 
+  // Simulate progress calculation based on moduleId
+  const progressData: Record<string, number> = {
+    'module1': 25,
+    'module2': 50,
+    'module3': 75,
+    'module4': 100,
+  };
+
+  return progressData[moduleId] || 0; // Default to 0 if moduleId is not found
 }

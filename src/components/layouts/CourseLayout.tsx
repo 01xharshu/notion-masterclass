@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/router';
-import { ArrowLeft, Sun, Moon, Bookmark } from 'lucide-react';
+import { ArrowLeft, Sun, Moon} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { useTheme } from 'next-themes';

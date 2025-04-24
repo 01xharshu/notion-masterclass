@@ -42,7 +42,7 @@ export default function VideoModal() {
             </Button>
           </div>
           <DialogDescription className="text-sm text-muted-foreground pt-2">
-            Watch this overview to learn what you'll master in this course
+            Watch this overview to learn what you&apos;ll master in this course
           </DialogDescription>
         </DialogHeader>
 
