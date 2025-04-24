@@ -34,7 +34,7 @@ import { useCourseProgress } from '@/contexts/CourseProgressContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Slider } from "@/components/ui/slider";
-import { CourseProgressBar } from './CourseProgressBar';
+import { CourseProgressBar } from '../components/ui/CourseProgressBar';
 import { fadeIn, slideIn, scaleIn, staggerChildren } from "@/lib/animations";
 
 

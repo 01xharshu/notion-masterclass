@@ -42,5 +42,5 @@ function getModuleProgress(moduleId: string): number {
     'module4': 100,
   };
 
-  return progressData[moduleId] || 0; // Default to 0 if moduleId is not found
+  return progressData[moduleId] || 0; 
 }

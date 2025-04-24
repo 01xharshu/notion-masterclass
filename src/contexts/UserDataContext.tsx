@@ -3,6 +3,8 @@
 import React from 'react';
 import { useLocalStorage } from '@/hooks/use-local-storage';
 
+type CacheValue = number | UserData['preferences'] | ChapterActivity | ModuleActivity;
+
 interface ChapterActivity {
   completed: boolean;
   lastAccessed: Date;
@@ -62,8 +64,7 @@ const initialUserData: UserData = {
 
 const UserDataContext = React.createContext<UserDataContextType | undefined>(undefined);
 
-// Cache for frequently accessed data
-const cache = new Map<string, any>();
+const cache = new Map<string, CacheValue>();
 
 export function UserDataProvider({ children }: { children: React.ReactNode }) {
   const [userData, setUserData] = useLocalStorage<UserData>('user-data', initialUserData);
@@ -114,13 +115,13 @@ export function UserDataProvider({ children }: { children: React.ReactNode }) {
       };
 
       // Update module stats
-      const module = updatedModules[moduleId];
-      const chapters = Object.values(module.chapters);
-      module.totalTimeSpent = chapters.reduce((sum, ch) => sum + ch.timeSpent, 0);
-      module.progress = chapters.length > 0
+      const modulo = updatedModules[moduleId];
+      const chapters = Object.values(modulo.chapters);
+      modulo.totalTimeSpent = chapters.reduce((sum, ch) => sum + ch.timeSpent, 0);
+      modulo.progress = chapters.length > 0
         ? (chapters.filter(ch => ch.completed).length / chapters.length) * 100
         : 0;
-      module.lastAccessed = new Date();
+      modulo.lastAccessed = new Date();
 
       // Update overall stats
       const modules = Object.values(updatedModules);
@@ -185,40 +186,59 @@ export function UserDataProvider({ children }: { children: React.ReactNode }) {
   const getChapterActivity = React.useCallback((
     moduleId: string,
     chapterId: string
-  ) => {
+  ): ChapterActivity | null => {
     const cacheKey = `chapter-${moduleId}-${chapterId}`;
-    if (cache.has(cacheKey)) {
-      return cache.get(cacheKey);
+    const cached = cache.get(cacheKey);
+  
+    if (cached && typeof cached === 'object' && 'completed' in cached && 'progress' in cached) {
+      return cached as ChapterActivity;
     }
-
+  
     const chapter = userData.modules[moduleId]?.chapters[chapterId];
     if (chapter) {
       cache.set(cacheKey, chapter);
+      return chapter;
     }
-    return chapter || null;
+  
+    return null;
   }, [userData.modules]);
+  
+  
 
-  const getModuleActivity = React.useCallback((moduleId: string) => {
+  const getModuleActivity = React.useCallback((moduleId: string): ModuleActivity | null => {
     const cacheKey = `module-${moduleId}`;
-    if (cache.has(cacheKey)) {
-      return cache.get(cacheKey);
+    const cached = cache.get(cacheKey);
+  
+    if (
+      cached &&
+      typeof cached === 'object' &&
+      'chapters' in cached &&
+      'progress' in cached
+    ) {
+      return cached as ModuleActivity;
     }
-
-    const module = userData.modules[moduleId];
-    if (module) {
-      cache.set(cacheKey, module);
+  
+    const moduleo = userData.modules[moduleId];
+    if (moduleo) {
+      cache.set(cacheKey, moduleo);
+      return moduleo;
     }
-    return module || null;
+  
+    return null;
   }, [userData.modules]);
+  
 
-  const getOverallProgress = React.useCallback(() => {
-    return cache.get('overallProgress') || userData.overallProgress;
+  const getOverallProgress = React.useCallback((): number => {
+    const cached = cache.get('overallProgress');
+    return typeof cached === 'number' ? cached : userData.overallProgress;
   }, [userData.overallProgress]);
+  
 
-  const getTotalTimeSpent = React.useCallback(() => {
-    return cache.get('totalTimeSpent') || userData.totalTimeSpent;
+  const getTotalTimeSpent = React.useCallback((): number => {
+    const cached = cache.get('totalTimeSpent');
+    return typeof cached === 'number' ? cached : userData.totalTimeSpent;
   }, [userData.totalTimeSpent]);
-
+  
   const value = React.useMemo(
     () => ({
       userData,
