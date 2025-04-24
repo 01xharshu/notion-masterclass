@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import { useCourseProgress } from '@/contexts/CourseProgressContext';
 import { User, ChevronUp } from 'lucide-react';
 import { cn } from "@/lib/utils";
-import { toast } from 'sonner';
+
 
 
 export function CourseProgressBar() {
-  const { progress, getOverallProgress, updateChapterProgress } = useCourseProgress();
+  const { progress, getOverallProgress } = useCourseProgress();
   const [overallProgress, setOverallProgress] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -21,17 +21,17 @@ export function CourseProgressBar() {
     setOverallProgress(getOverallProgress());
   }, [getOverallProgress]);
 
-  const handleCompleteToggle = () => {
-    const newProgress = overallProgress === 100 ? 0 : 100;
-    // Update all chapters to match the new progress
-    Object.keys(progress.modules).forEach(moduleId => {
-      Object.keys(progress.modules[moduleId].chapters).forEach(chapterId => {
-        updateChapterProgress(moduleId, chapterId, newProgress === 100);
-      });
-    });
-    toast.success(`All chapters marked as ${newProgress === 100 ? 'completed' : 'not completed'}`);
-    setOverallProgress(newProgress);
-  };
+  // const handleCompleteToggle = () => {
+  //   const newProgress = overallProgress === 100 ? 0 : 100;
+  //   // Update all chapters to match the new progress
+  //   Object.keys(progress.modules).forEach(moduleId => {
+  //     Object.keys(progress.modules[moduleId].chapters).forEach(chapterId => {
+  //       updateChapterProgress(moduleId, chapterId, newProgress === 100);
+  //     });
+  //   });
+  //   toast.success(`All chapters marked as ${newProgress === 100 ? 'completed' : 'not completed'}`);
+  //   setOverallProgress(newProgress);
+  // };
 
   if (!mounted) {
     return null;

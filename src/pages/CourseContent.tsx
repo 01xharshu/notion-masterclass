@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { toast } from "sonner"
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from 'next-themes';
+
 import { 
    
   Video, 
@@ -188,7 +188,7 @@ const CourseContent = () => {
   const [selectedChapter, setSelectedChapter] = useState<{ moduleId: string; chapterId: string } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { progress, updateChapterProgress, getModuleProgress } = useCourseProgress();
@@ -199,7 +199,7 @@ const CourseContent = () => {
     isPlaying: false,
   });
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const { theme, setTheme } = useTheme();
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isVideoFullscreen, setIsVideoFullscreen] = useState(false);
   const videoContainerRef = useRef<HTMLDivElement>(null);
@@ -232,7 +232,7 @@ const CourseContent = () => {
     }
   };
 
-  // Handle theme toggle
+
 
   const toggleModule = (moduleId: string) => {
     setExpandedModule((prev) => (prev === moduleId ? null : moduleId));
@@ -304,14 +304,13 @@ const CourseContent = () => {
     if (selectedChapter) {
       const isCompleted = isChapterCompleted(selectedChapter.moduleId, selectedChapter.chapterId);
       updateChapterProgress(selectedChapter.moduleId, selectedChapter.chapterId, !isCompleted);
+  
+      toast.success(
+        !isCompleted
+          ? "Chapter Completed 🎉"
+          : "Chapter marked as incomplete"
+      );
     }
-
-    toast.success(
-      isChapterCompleted(selectedChapter.moduleId, selectedChapter.chapterId) 
-        ?  "Chapter Completed 🎉"
-        : "Chapter marked as incomplete"
-    );
-
   };
 
   return (
